@@ -23,8 +23,10 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void getWeather() {
         viewModel.fetchWeatherData();
-        viewModel.getWeatherLiveData().observe(this, weatherModel ->
-                Log.d("WEATHER DATA", "time -> " + weatherModel.getLocalTime()
-                        + "temperature" + weatherModel.getCurrentTemperature()));
+        viewModel.getWeatherLiveData().observe(this, weatherData ->
+                Log.d("WEATHER DATA", "time -> " + weatherData.getLocalTime()
+                        + "temperature ->" + weatherData.getCurrentTemperature()
+                        + "min temperature -> " + weatherData.getMinTemperature()
+                        + "max temperature -> " + weatherData.getMaxTemperature()));
     }
 }
