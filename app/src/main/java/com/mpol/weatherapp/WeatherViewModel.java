@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
@@ -24,6 +25,8 @@ public class WeatherViewModel extends ViewModel {
 
     private final VolleySingleton volleySingleton;
     private final MutableLiveData<WeatherModel> weatherLiveData = new MutableLiveData<>();
+
+    private Disposable disposable;
 
     @Inject
     public WeatherViewModel(VolleySingleton volleySingleton) {
@@ -36,15 +39,24 @@ public class WeatherViewModel extends ViewModel {
 
     public void fetchWeatherData() {
         String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, response -> Observable.fromCallable(() -> processResponse(response))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                weatherLiveData::setValue,
-                                throwable -> Log.e("ERROR IN RX", "Error during processing response" + throwable.getMessage())
-                        ), error -> Log.e("ERROR", "error while fetching data ->" + error.getMessage()));
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                this::handleResponse,
+                error -> Log.e("ERROR", "error while fetching data ->" + error.getMessage())
+        );
         volleySingleton.getRequestQueue().add(jsonObjectRequest);
+    }
+
+    private void handleResponse(JSONObject response) {
+        if (response != null) {
+            disposable = Observable.fromCallable(() -> processResponse(response))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            weatherLiveData::setValue,
+                            throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
+                    );
+        }
     }
 
     private WeatherModel processResponse(JSONObject response) throws JSONException {
@@ -56,5 +68,17 @@ public class WeatherViewModel extends ViewModel {
         String humidity = response.getJSONObject("current").getString("humidity");
 
         return new WeatherModel(localTime, temperature, icon, iconText, windSpeed, humidity);
+    }
+
+    private void disposeSubscription() {
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposeSubscription();
     }
 }
