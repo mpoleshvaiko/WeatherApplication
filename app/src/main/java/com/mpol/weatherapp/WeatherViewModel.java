@@ -35,7 +35,7 @@ public class WeatherViewModel extends ViewModel {
     }
 
     public void fetchWeatherData() {
-        String url = "https://api.weatherapi.com/v1/forecast.json?key=something&q=Warsaw";
+        String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, response -> Observable.fromCallable(() -> processResponse(response))
                         .subscribeOn(Schedulers.io())
