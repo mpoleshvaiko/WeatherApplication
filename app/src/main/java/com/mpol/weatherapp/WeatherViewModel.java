@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class WeatherViewModel extends ViewModel {
 
     private final VolleySingleton volleySingleton;
-    private final MutableLiveData<WeatherModel> weatherLiveData = new MutableLiveData<>();
+    private final MutableLiveData<WeatherData> weatherLiveData = new MutableLiveData<>();
 
     private Disposable disposable;
 
@@ -33,7 +32,7 @@ public class WeatherViewModel extends ViewModel {
         this.volleySingleton = volleySingleton;
     }
 
-    public LiveData<WeatherModel> getWeatherLiveData() {
+    public LiveData<WeatherData> getWeatherLiveData() {
         return weatherLiveData;
     }
 
@@ -49,7 +48,7 @@ public class WeatherViewModel extends ViewModel {
 
     private void handleResponse(JSONObject response) {
         if (response != null) {
-            disposable = Observable.fromCallable(() -> processResponse(response))
+            disposable = Observable.fromCallable(() -> WeatherResponseMapper.mapResponse(response))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
@@ -57,19 +56,6 @@ public class WeatherViewModel extends ViewModel {
                             throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
                     );
         }
-    }
-
-    private WeatherModel processResponse(JSONObject response) throws JSONException {
-        JSONObject currentObject = response.getJSONObject("current");
-        JSONObject locationObject = response.getJSONObject("location");
-        String temperature = currentObject.getString("temp_c");
-        String localTime = locationObject.getString("localtime");
-        String icon = currentObject.getJSONObject("condition").getString("icon");
-        String iconText = currentObject.getJSONObject("condition").getString("text");
-        String windSpeed = currentObject.getString("wind_mph");
-        String humidity = currentObject.getString("humidity");
-
-        return new WeatherModel(localTime, temperature, icon, iconText, windSpeed, humidity);
     }
 
     private void disposeSubscription() {

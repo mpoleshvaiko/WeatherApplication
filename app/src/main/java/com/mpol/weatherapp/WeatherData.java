@@ -1,12 +1,17 @@
 package com.mpol.weatherapp;
 
-public class WeatherModel {
+public class WeatherData {
     private String localTime;
     private String currentTemperature;
     private String icon;
     private String iconText;
     private String windSpeed;
     private String humidity;
+
+    private Integer isDay;
+
+    private String maxTemperature;
+    private String minTemperature;
 
     public String getLocalTime() {
         return localTime;
@@ -56,13 +61,40 @@ public class WeatherModel {
         this.humidity = humidity;
     }
 
-    public WeatherModel(
+    public Integer getIsDay() {
+        return isDay;
+    }
+
+    public void setIsDay(Integer isDay) {
+        this.isDay = isDay;
+    }
+
+    public String getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    public void setMaxTemperature(String maxTemperature) {
+        this.maxTemperature = maxTemperature;
+    }
+
+    public String getMinTemperature() {
+        return minTemperature;
+    }
+
+    public void setMinTemperature(String minTemperature) {
+        this.minTemperature = minTemperature;
+    }
+
+    public WeatherData(
             String localTime,
             String currentTemperature,
             String icon,
             String iconText,
             String windSpeed,
-            String humidity
+            String humidity,
+            Integer isDay,
+            String maxTemperature,
+            String minTemperature
     ) {
         this.localTime = localTime;
         this.currentTemperature = currentTemperature;
@@ -70,5 +102,8 @@ public class WeatherModel {
         this.iconText = iconText;
         this.windSpeed = windSpeed;
         this.humidity = humidity;
+        this.isDay = isDay;
+        this.maxTemperature = maxTemperature;
+        this.minTemperature = minTemperature;
     }
 }
