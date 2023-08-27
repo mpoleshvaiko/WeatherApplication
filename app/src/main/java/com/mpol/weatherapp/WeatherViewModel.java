@@ -60,12 +60,14 @@ public class WeatherViewModel extends ViewModel {
     }
 
     private WeatherModel processResponse(JSONObject response) throws JSONException {
-        String temperature = response.getJSONObject("current").getString("temp_c");
-        String localTime = response.getJSONObject("location").getString("localtime");
-        String icon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
-        String iconText = response.getJSONObject("current").getJSONObject("condition").getString("text");
-        String windSpeed = response.getJSONObject("current").getString("wind_mph");
-        String humidity = response.getJSONObject("current").getString("humidity");
+        JSONObject currentObject = response.getJSONObject("current");
+        JSONObject locationObject = response.getJSONObject("location");
+        String temperature = currentObject.getString("temp_c");
+        String localTime = locationObject.getString("localtime");
+        String icon = currentObject.getJSONObject("condition").getString("icon");
+        String iconText = currentObject.getJSONObject("condition").getString("text");
+        String windSpeed = currentObject.getString("wind_mph");
+        String humidity = currentObject.getString("humidity");
 
         return new WeatherModel(localTime, temperature, icon, iconText, windSpeed, humidity);
     }
