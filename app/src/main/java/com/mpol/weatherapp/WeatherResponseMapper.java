@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class WeatherResponseMapper {
 
-    public static WeatherData mapResponse(JSONObject response) throws JSONException {
+    public static WeatherData mapResponse(JSONObject response, boolean isDarkMode) throws JSONException {
         JSONObject currentObject = response.getJSONObject("current");
         JSONObject locationObject = response.getJSONObject("location");
         JSONObject forecastObject = response.getJSONObject("forecast");
@@ -15,7 +15,7 @@ public class WeatherResponseMapper {
         String temperature = currentObject.getString("temp_c");
         String localTime = locationObject.getString("localtime");
         String iconText = currentObject.getJSONObject("condition").getString("text");
-        Integer icon = getIconResourceForCondition(iconText);
+        Integer icon = getIconResourceForCondition(iconText, isDarkMode);
         String windSpeed = currentObject.getString("wind_mph");
         String humidity = currentObject.getString("humidity");
         Integer isDay = currentObject.getInt("is_day");

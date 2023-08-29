@@ -3,6 +3,7 @@ package com.mpol.weatherapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
@@ -21,8 +22,14 @@ public class WeatherActivity extends AppCompatActivity {
         binding = ActivityWeatherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         viewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
+        viewModel.setCurrentThemeMode(isDarkMode());
         binding.setViewmodel(viewModel);
         binding.setLifecycleOwner(this);
         viewModel.fetchWeatherData();
+    }
+
+    private boolean isDarkMode() {
+        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 }
