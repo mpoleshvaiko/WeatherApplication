@@ -110,6 +110,6 @@ public class WeatherConditionToIconMapper {
     public static int getIconResourceForCondition(String condition, boolean isDarkMode) {
         Map<String, Integer> iconMap = isDarkMode ? lightConditionToIconMap : darkConditionToIconMap;
         Integer iconResource = iconMap.get(condition);
-        return iconResource != null ? iconResource : R.drawable.ic_default;
+        return iconResource != null ? iconResource : (isDarkMode ? R.drawable.ic_default_light : R.drawable.ic_default_dark);
     }
 }

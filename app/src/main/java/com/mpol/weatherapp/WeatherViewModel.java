@@ -27,15 +27,19 @@ public class WeatherViewModel extends ViewModel {
 
     private Disposable disposable;
 
-    private boolean isDarkMode;
+    private MutableLiveData<Boolean> isDarkModeLiveData = new MutableLiveData<>();
 
     @Inject
     public WeatherViewModel(VolleySingleton volleySingleton) {
         this.volleySingleton = volleySingleton;
     }
 
+    public LiveData<Boolean> getCurrentThemeMode() {
+        return isDarkModeLiveData;
+    }
+
     public void setCurrentThemeMode(boolean isDarkMode) {
-        this.isDarkMode = isDarkMode;
+        isDarkModeLiveData.setValue(isDarkMode);
     }
 
     public LiveData<WeatherData> getWeatherLiveData() {
@@ -54,7 +58,7 @@ public class WeatherViewModel extends ViewModel {
 
     private void handleResponse(JSONObject response) {
         if (response != null) {
-            disposable = Observable.fromCallable(() -> WeatherResponseMapper.mapResponse(response, isDarkMode))
+            disposable = Observable.fromCallable(() -> WeatherResponseMapper.mapResponse(response, isDarkModeLiveData.getValue()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
