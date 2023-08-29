@@ -14,35 +14,54 @@
         android:padding="10dp"
         android:text="City Name"
         android:textAlignment="center"
-        android:textSize="12sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_layout"
+    <LinearLayout
+        android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_city_name"
-        android:background="@android:color/transparent"
-        android:hint="Search for city"
-        android:padding="10dp"
-        app:boxStrokeColor="@android:color/transparent"
-        app:endIconDrawable="@drawable/ic_search"
-        app:endIconMode="custom">
+        android:orientation="horizontal"
+        android:weightSum="5">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4.5"
             android:background="@android:color/transparent"
-            android:inputType="text"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Search for city"
+            android:padding="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/image_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/ic_search" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/weather_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_input_layout"
+        android:layout_below="@id/search_layout"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_default" />
 
@@ -55,7 +74,7 @@
         android:padding="10dp"
         android:text="20C"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="80sp" />
 
     <TextView
         android:id="@+id/text_condition"
@@ -65,7 +84,8 @@
         android:gravity="center_horizontal"
         android:padding="10dp"
         android:text="Mostly cloudy"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textSize="20sp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -77,8 +97,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="19C"
+            android:text="L:19C"
             android:textAlignment="center"
+            android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/text_min_temperature"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,8 +110,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="25C"
+            android:text="H:25C"
             android:textAlignment="center"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/text_max_temperature"
             app:layout_constraintTop_toTopOf="parent" />
