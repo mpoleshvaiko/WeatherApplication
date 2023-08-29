@@ -4,7 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
-import android.util.Log;
+
+import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -12,21 +13,16 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class WeatherActivity extends AppCompatActivity {
 
     private WeatherViewModel viewModel;
+    private ActivityWeatherBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityWeatherBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         viewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
-        setContentView(R.layout.activity_weather);
-        getWeather();
-    }
-
-    private void getWeather() {
+        binding.setViewmodel(viewModel);
+        binding.setLifecycleOwner(this);
         viewModel.fetchWeatherData();
-        viewModel.getWeatherLiveData().observe(this, weatherData ->
-                Log.d("WEATHER DATA", "time -> " + weatherData.getLocalTime()
-                        + "temperature ->" + weatherData.getCurrentTemperature()
-                        + "min temperature -> " + weatherData.getMinTemperature()
-                        + "max temperature -> " + weatherData.getMaxTemperature()));
     }
 }
