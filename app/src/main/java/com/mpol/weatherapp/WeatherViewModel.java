@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -27,7 +29,7 @@ public class WeatherViewModel extends ViewModel {
 
     private Disposable disposable;
 
-    private MutableLiveData<Boolean> isDarkModeLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isDarkModeLiveData = new MutableLiveData<>();
 
     @Inject
     public WeatherViewModel(VolleySingleton volleySingleton) {
@@ -46,26 +48,32 @@ public class WeatherViewModel extends ViewModel {
         return weatherLiveData;
     }
 
-    public void fetchWeatherData() {
-        String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null,
-                this::handleResponse,
-                error -> Log.e("ERROR", "error while fetching data ->" + error.getMessage())
-        );
-        volleySingleton.getRequestQueue().add(jsonObjectRequest);
-    }
 
-    private void handleResponse(JSONObject response) {
-        if (response != null) {
-            disposable = Observable.fromCallable(() -> WeatherResponseMapper.mapResponse(response, isDarkModeLiveData.getValue()))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            weatherLiveData::setValue,
-                            throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
+    public void fetchWeatherData() {
+        disposable = Observable.create((ObservableOnSubscribe<JSONObject>) emitter -> {
+                    String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            Request.Method.GET, url, null,
+                            emitter::onNext,
+                            emitter::onError
                     );
-        }
+
+                    volleySingleton.getRequestQueue().add(jsonObjectRequest);
+                })
+                .flatMap(response -> {
+                    try {
+                        boolean isDarkMode = isDarkModeLiveData.getValue() != null && isDarkModeLiveData.getValue();
+                        return Observable.just(WeatherResponseMapper.mapResponse(response, isDarkMode));
+                    } catch (JSONException e) {
+                        return Observable.error(e);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        weatherLiveData::setValue,
+                        throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
+                );
     }
 
     private void disposeSubscription() {
