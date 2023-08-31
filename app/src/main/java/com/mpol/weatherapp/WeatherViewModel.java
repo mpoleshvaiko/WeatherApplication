@@ -12,6 +12,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -48,9 +50,19 @@ public class WeatherViewModel extends ViewModel {
         return weatherLiveData;
     }
 
+    public void fetchWeatherDataWithInterval() {
+        disposable = Observable.interval(0, 1, TimeUnit.MINUTES)
+                .flatMap(period -> fetchWeatherData())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        weatherLiveData::setValue,
+                        throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
+                );
+    }
 
-    public void fetchWeatherData() {
-        disposable = Observable.create((ObservableOnSubscribe<JSONObject>) emitter -> {
+    public Observable<WeatherData> fetchWeatherData() {
+        return Observable.create((ObservableOnSubscribe<JSONObject>) emitter -> {
                     String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                             Request.Method.GET, url, null,
@@ -67,13 +79,7 @@ public class WeatherViewModel extends ViewModel {
                     } catch (JSONException e) {
                         return Observable.error(e);
                     }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        weatherLiveData::setValue,
-                        throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
-                );
+                });
     }
 
     private void disposeSubscription() {

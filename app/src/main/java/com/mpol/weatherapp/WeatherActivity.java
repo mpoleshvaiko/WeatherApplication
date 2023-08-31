@@ -25,7 +25,7 @@ public class WeatherActivity extends AppCompatActivity {
         viewModel.setCurrentThemeMode(isDarkMode());
         binding.setViewmodel(viewModel);
         binding.setLifecycleOwner(this);
-        viewModel.fetchWeatherData();
+        viewModel.fetchWeatherDataWithInterval();
     }
 
     private boolean isDarkMode() {
