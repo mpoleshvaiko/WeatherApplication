@@ -9,8 +9,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class WeatherResponseMapper {
 
@@ -36,9 +40,15 @@ public class WeatherResponseMapper {
         ArrayList<ForecastWeatherData> forecastWeatherDataList = new ArrayList<>();
         JSONObject forecastDayObject = response.getJSONObject("forecast").getJSONArray("forecastday").getJSONObject(0);
         JSONArray hourlyDataArray = forecastDayObject.getJSONArray("hour");
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.UK);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.UK);
+
         for (int i = 0; i < hourlyDataArray.length(); i++) {
             JSONObject hourlyDataObject = hourlyDataArray.getJSONObject(i);
-            String localTime = hourlyDataObject.getString("time");
+            String rawTime = hourlyDataObject.getString("time");
+            String localTime = formatTime(rawTime, inputFormat, outputFormat);
+
             String temperature = hourlyDataObject.getString("temp_c");
             Integer isDay = hourlyDataObject.getInt("is_day");
             String iconText = hourlyDataObject.getJSONObject("condition").getString("text");
@@ -47,5 +57,20 @@ public class WeatherResponseMapper {
             forecastWeatherDataList.add(new ForecastWeatherData(localTime, temperature, icon, iconText, isDay));
         }
         return forecastWeatherDataList;
+    }
+
+    private static String formatTime(
+            String rawTime,
+            SimpleDateFormat inputFormat,
+            SimpleDateFormat outputFormat
+    ) {
+        try {
+            Date date = inputFormat.parse(rawTime);
+            assert date != null;
+            String formatted = outputFormat.format(date);
+            return formatted.substring(0, formatted.length() - 3);
+        } catch (ParseException e) {
+            return rawTime;
+        }
     }
 }
