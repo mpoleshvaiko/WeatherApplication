@@ -10,19 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mpol.weatherapp.BR;
 import com.mpol.weatherapp.R;
 import com.mpol.weatherapp.databinding.HourlyForecastItemBinding;
-import com.mpol.weatherapp.model.ForecastWeatherData;
+import com.mpol.weatherapp.model.HourlyForecastWeatherData;
 
 import java.util.List;
 
 public class HourlyForecastAdapter extends RecyclerView.Adapter<HourlyForecastAdapter.ForecastViewHolder> {
 
-    private List<ForecastWeatherData> forecastList;
+    private List<HourlyForecastWeatherData> forecastList;
 
-    public HourlyForecastAdapter(List<ForecastWeatherData> forecastList) {
+    public HourlyForecastAdapter(List<HourlyForecastWeatherData> forecastList) {
         this.forecastList = forecastList;
     }
 
-    public void setForecastList(List<ForecastWeatherData> forecastList) {
+    public void setForecastList(List<HourlyForecastWeatherData> forecastList) {
         this.forecastList = forecastList;
     }
 
@@ -37,7 +37,7 @@ public class HourlyForecastAdapter extends RecyclerView.Adapter<HourlyForecastAd
 
     @Override
     public void onBindViewHolder(@NonNull ForecastViewHolder holder, int position) {
-        ForecastWeatherData forecast = forecastList.get(position);
+        HourlyForecastWeatherData forecast = forecastList.get(position);
         holder.bind(forecast);
     }
 

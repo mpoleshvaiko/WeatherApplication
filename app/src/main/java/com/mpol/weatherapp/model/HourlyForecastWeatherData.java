@@ -1,6 +1,6 @@
 package com.mpol.weatherapp.model;
 
-public class ForecastWeatherData {
+public class HourlyForecastWeatherData {
     private String localTime;
     private String temperature;
     private Integer icon;
@@ -39,7 +39,7 @@ public class ForecastWeatherData {
         this.isDay = isDay;
     }
 
-    public ForecastWeatherData(
+    public HourlyForecastWeatherData(
             String localTime,
             String temperature,
             Integer icon,

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
 import com.mpol.weatherapp.recyclerview.HourlyForecastAdapter;
@@ -43,9 +42,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void populateRecyclerView() {
-        viewModel.getForecastLiveData().observe(this, forecastWeatherData -> {
-            hourlyForecastAdapter.setForecastList(forecastWeatherData);
-            hourlyForecastAdapter.notifyDataSetChanged();
-        });
+        viewModel.getHourlyForecastLiveData().observe(this, forecastWeatherData ->
+                hourlyForecastAdapter.setForecastList(forecastWeatherData));
     }
 }

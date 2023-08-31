@@ -76,7 +76,7 @@
             android:layout_below="@id/search_layout"
             android:layout_centerHorizontal="true"
             app:isDarkMode="@{viewmodel.currentThemeMode}"
-            app:weatherConditionIcon="@{viewmodel.weatherLiveData.icon}" />
+            app:weatherConditionIcon="@{viewmodel.dayWeatherLiveData.icon}" />
 
         <TextView
             android:id="@+id/text_temperature"
@@ -85,7 +85,7 @@
             android:layout_below="@id/weather_icon"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:text="@{viewmodel.weatherLiveData.currentTemperature}"
+            android:text="@{viewmodel.dayWeatherLiveData.currentTemperature}"
             android:textAlignment="center"
             android:textSize="80sp" />
 
@@ -96,7 +96,7 @@
             android:layout_below="@id/text_temperature"
             android:gravity="center_horizontal"
             android:padding="10dp"
-            android:text="@{viewmodel.weatherLiveData.iconText}"
+            android:text="@{viewmodel.dayWeatherLiveData.iconText}"
             android:textAlignment="center"
             android:textSize="20sp" />
 
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="@{viewmodel.weatherLiveData.maxTemperature}"
+                android:text="@{viewmodel.dayWeatherLiveData.maxTemperature}"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toStartOf="@+id/text_min_temperature"
@@ -124,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="@{viewmodel.weatherLiveData.minTemperature}"
+                android:text="@{viewmodel.dayWeatherLiveData.minTemperature}"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"

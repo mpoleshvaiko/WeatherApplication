@@ -7,7 +7,7 @@
 
         <variable
             name="forecast"
-            type="com.mpol.weatherapp.model.ForecastWeatherData" />
+            type="com.mpol.weatherapp.model.HourlyForecastWeatherData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

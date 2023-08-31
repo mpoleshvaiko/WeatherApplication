@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.mpol.weatherapp.BuildConfig;
-import com.mpol.weatherapp.model.ForecastWeatherData;
+import com.mpol.weatherapp.model.DayWeatherData;
+import com.mpol.weatherapp.model.HourlyForecastWeatherData;
 import com.mpol.weatherapp.VolleySingleton;
-import com.mpol.weatherapp.model.WeatherData;
 import com.mpol.weatherapp.mapper.WeatherResponseMapper;
 
 import org.json.JSONException;
@@ -36,9 +36,9 @@ public class WeatherViewModel extends ViewModel {
     private final VolleySingleton volleySingleton;
 
     private Disposable disposable;
-    private final MutableLiveData<WeatherData> weatherLiveData = new MutableLiveData<>();
+    private final MutableLiveData<DayWeatherData> dayWeatherLiveData = new MutableLiveData<>();
 
-    private final MutableLiveData<List<ForecastWeatherData>> forecastLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<HourlyForecastWeatherData>> hourlyForecastLiveData = new MutableLiveData<>();
 
     private final MutableLiveData<Boolean> isDarkModeLiveData = new MutableLiveData<>();
 
@@ -55,12 +55,12 @@ public class WeatherViewModel extends ViewModel {
         isDarkModeLiveData.setValue(isDarkMode);
     }
 
-    public LiveData<WeatherData> getWeatherLiveData() {
-        return weatherLiveData;
+    public LiveData<DayWeatherData> getDayWeatherLiveData() {
+        return dayWeatherLiveData;
     }
 
-    public LiveData<List<ForecastWeatherData>> getForecastLiveData() {
-        return forecastLiveData;
+    public LiveData<List<HourlyForecastWeatherData>> getHourlyForecastLiveData() {
+        return hourlyForecastLiveData;
     }
 
     public void fetchWeatherDataWithInterval() {
@@ -70,14 +70,14 @@ public class WeatherViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         pair -> {
-                            weatherLiveData.setValue(pair.first);
-                            forecastLiveData.setValue(pair.second);
+                            dayWeatherLiveData.setValue(pair.first);
+                            hourlyForecastLiveData.setValue(pair.second);
                         },
                         throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
                 );
     }
 
-    public Observable<Pair<WeatherData, List<ForecastWeatherData>>> fetchWeatherData() {
+    public Observable<Pair<DayWeatherData, List<HourlyForecastWeatherData>>> fetchWeatherData() {
         return Observable.create((ObservableOnSubscribe<JSONObject>) emitter -> {
                     String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -91,8 +91,8 @@ public class WeatherViewModel extends ViewModel {
                 .flatMap(response -> {
                     try {
                         boolean isDarkMode = isDarkModeLiveData.getValue() != null && isDarkModeLiveData.getValue();
-                        WeatherData currentWeather = WeatherResponseMapper.mapResponse(response, isDarkMode);
-                        List<ForecastWeatherData> forecastData = WeatherResponseMapper.mapForecastResponse(response, isDarkMode);
+                        DayWeatherData currentWeather = WeatherResponseMapper.mapDayResponse(response, isDarkMode);
+                        List<HourlyForecastWeatherData> forecastData = WeatherResponseMapper.mapHourlyForecastResponse(response, isDarkMode);
                         return Observable.just(new Pair<>(currentWeather, forecastData));
                     } catch (JSONException e) {
                         return Observable.error(e);

@@ -1,6 +1,6 @@
 package com.mpol.weatherapp.model;
 
-public class WeatherData {
+public class DayWeatherData {
     private String localTime;
     private String currentTemperature;
     private Integer icon;
@@ -85,7 +85,7 @@ public class WeatherData {
         this.minTemperature = minTemperature;
     }
 
-    public WeatherData(
+    public DayWeatherData(
             String localTime,
             String currentTemperature,
             Integer icon,
