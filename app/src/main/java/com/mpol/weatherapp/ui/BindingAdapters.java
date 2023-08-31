@@ -23,4 +23,9 @@ public class BindingAdapters {
         int defaultIcon = isDarkMode ? R.drawable.ic_search_light : R.drawable.ic_search_dark;
         imageView.setImageResource(defaultIcon);
     }
+
+    @BindingAdapter("hourlyForecastIcon")
+    public static void setHourlyForecastIcon(ImageView imageView, Integer iconResource) {
+        imageView.setImageResource(iconResource);
+    }
 }

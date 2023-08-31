@@ -11,6 +11,7 @@ public class WeatherConditionToIconMapper {
 
     static {
         lightConditionToIconMap.put("Sunny", R.drawable.ic_sunny_light);
+        lightConditionToIconMap.put("Clear", R.drawable.ic_clear_light);
         lightConditionToIconMap.put("Partly cloudy", R.drawable.ic_day_partly_cloudy_light);
         lightConditionToIconMap.put("Cloudy", R.drawable.ic_cloudy_light);
         lightConditionToIconMap.put("Overcast", R.drawable.ic_overcast_light);
@@ -60,6 +61,7 @@ public class WeatherConditionToIconMapper {
         lightConditionToIconMap.put("Moderate or heavy snow with thunder", R.drawable.ic_thunder_light);
 
         darkConditionToIconMap.put("Sunny", R.drawable.ic_sunny_dark);
+        darkConditionToIconMap.put("Clear", R.drawable.ic_clear_dark);
         darkConditionToIconMap.put("Partly cloudy", R.drawable.ic_day_partly_cloudy_dark);
         darkConditionToIconMap.put("Cloudy", R.drawable.ic_cloudy_dark);
         darkConditionToIconMap.put("Overcast", R.drawable.ic_overcast_dark);

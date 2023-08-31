@@ -4,7 +4,6 @@ public class ForecastWeatherData {
     private String localTime;
     private String temperature;
     private Integer icon;
-    private String iconText;
 
     private Integer isDay;
 
@@ -32,14 +31,6 @@ public class ForecastWeatherData {
         this.icon = icon;
     }
 
-    public String getIconText() {
-        return iconText;
-    }
-
-    public void setIconText(String iconText) {
-        this.iconText = iconText;
-    }
-
     public Integer getIsDay() {
         return isDay;
     }
@@ -52,13 +43,11 @@ public class ForecastWeatherData {
             String localTime,
             String temperature,
             Integer icon,
-            String iconText,
             Integer isDay
     ) {
         this.localTime = localTime;
         this.temperature = temperature;
         this.icon = icon;
-        this.iconText = iconText;
         this.isDay = isDay;
     }
 }

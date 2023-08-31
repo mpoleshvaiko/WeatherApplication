@@ -54,7 +54,7 @@ public class WeatherResponseMapper {
             String iconText = hourlyDataObject.getJSONObject("condition").getString("text");
             Integer icon = getIconResourceForCondition(iconText, isDarkMode);
 
-            forecastWeatherDataList.add(new ForecastWeatherData(localTime, temperature, icon, iconText, isDay));
+            forecastWeatherDataList.add(new ForecastWeatherData(localTime, temperature, icon, isDay));
         }
         return forecastWeatherDataList;
     }
