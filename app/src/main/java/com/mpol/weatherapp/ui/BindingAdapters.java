@@ -1,8 +1,10 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.ui;
 
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
+
+import com.mpol.weatherapp.R;
 
 public class BindingAdapters {
 

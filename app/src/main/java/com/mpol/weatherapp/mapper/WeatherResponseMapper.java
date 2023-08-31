@@ -1,6 +1,9 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.mapper;
 
-import static com.mpol.weatherapp.WeatherConditionToIconMapper.getIconResourceForCondition;
+import static com.mpol.weatherapp.mapper.WeatherConditionToIconMapper.getIconResourceForCondition;
+
+import com.mpol.weatherapp.model.ForecastWeatherData;
+import com.mpol.weatherapp.model.WeatherData;
 
 import org.json.JSONArray;
 import org.json.JSONException;

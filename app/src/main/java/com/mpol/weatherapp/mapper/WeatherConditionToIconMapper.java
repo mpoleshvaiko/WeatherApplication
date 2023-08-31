@@ -1,4 +1,6 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.mapper;
+
+import com.mpol.weatherapp.R;
 
 import java.util.HashMap;
 import java.util.Map;

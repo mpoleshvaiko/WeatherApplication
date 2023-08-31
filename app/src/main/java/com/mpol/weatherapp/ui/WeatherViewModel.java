@@ -1,4 +1,4 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.ui;
 
 import android.util.Log;
 import android.util.Pair;
@@ -9,6 +9,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.mpol.weatherapp.BuildConfig;
+import com.mpol.weatherapp.model.ForecastWeatherData;
+import com.mpol.weatherapp.VolleySingleton;
+import com.mpol.weatherapp.model.WeatherData;
+import com.mpol.weatherapp.mapper.WeatherResponseMapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -7,13 +7,17 @@
 
         <variable
             name="viewmodel"
-            type="com.mpol.weatherapp.WeatherViewModel" />
+            type="com.mpol.weatherapp.ui.WeatherViewModel" />
+
+        <variable
+            name="hourlyForecastAdapter"
+            type="com.mpol.weatherapp.recyclerview.HourlyForecastAdapter" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".WeatherActivity">
+        tools:context=".ui.WeatherActivity">
 
         <TextView
             android:id="@+id/text_city_name"
@@ -97,6 +101,7 @@
             android:textSize="20sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/min_max_temperature_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_condition">
@@ -126,6 +131,15 @@
                 app:layout_constraintStart_toEndOf="@id/text_max_temperature"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hourlyForecastRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/min_max_temperature_layout"
+            android:adapter="@{hourlyForecastAdapter}"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </RelativeLayout>
 </layout>

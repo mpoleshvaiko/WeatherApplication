@@ -1,8 +1,8 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.model;
 
 public class ForecastWeatherData {
     private String localTime;
-    private String currentTemperature;
+    private String temperature;
     private Integer icon;
     private String iconText;
 
@@ -16,12 +16,12 @@ public class ForecastWeatherData {
         this.localTime = localTime;
     }
 
-    public String getCurrentTemperature() {
-        return currentTemperature;
+    public String getTemperature() {
+        return temperature;
     }
 
-    public void setCurrentTemperature(String currentTemperature) {
-        this.currentTemperature = currentTemperature;
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
     }
 
     public Integer getIcon() {
@@ -50,13 +50,13 @@ public class ForecastWeatherData {
 
     public ForecastWeatherData(
             String localTime,
-            String currentTemperature,
+            String temperature,
             Integer icon,
             String iconText,
             Integer isDay
     ) {
         this.localTime = localTime;
-        this.currentTemperature = currentTemperature;
+        this.temperature = temperature;
         this.icon = icon;
         this.iconText = iconText;
         this.isDay = isDay;
