@@ -2,8 +2,12 @@ package com.mpol.weatherapp;
 
 import static com.mpol.weatherapp.WeatherConditionToIconMapper.getIconResourceForCondition;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeatherResponseMapper {
 
@@ -23,5 +27,22 @@ public class WeatherResponseMapper {
         String minTemperature = forecastDayObject.getString("mintemp_c");
 
         return new WeatherData(localTime, temperature, icon, iconText, windSpeed, humidity, isDay, maxTemperature, minTemperature);
+    }
+
+    public static List<ForecastWeatherData> mapForecastResponse(JSONObject response, boolean isDarkMode) throws JSONException {
+        ArrayList<ForecastWeatherData> forecastWeatherDataList = new ArrayList<>();
+        JSONObject forecastDayObject = response.getJSONObject("forecast").getJSONArray("forecastday").getJSONObject(0);
+        JSONArray hourlyDataArray = forecastDayObject.getJSONArray("hour");
+        for (int i = 0; i < hourlyDataArray.length(); i++) {
+            JSONObject hourlyDataObject = hourlyDataArray.getJSONObject(i);
+            String localTime = hourlyDataObject.getString("time");
+            String temperature = hourlyDataObject.getString("temp_c");
+            Integer isDay = hourlyDataObject.getInt("is_day");
+            String iconText = hourlyDataObject.getJSONObject("condition").getString("text");
+            Integer icon = getIconResourceForCondition(iconText, isDarkMode);
+
+            forecastWeatherDataList.add(new ForecastWeatherData(localTime, temperature, icon, iconText, isDay));
+        }
+        return forecastWeatherDataList;
     }
 }
