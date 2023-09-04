@@ -42,7 +42,9 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void populateRecyclerView() {
-        viewModel.getHourlyForecastLiveData().observe(this, forecastWeatherData ->
-                hourlyForecastAdapter.setForecastList(forecastWeatherData));
+        viewModel.getHourlyForecastLiveData().observe(this, forecastWeatherData -> {
+            hourlyForecastAdapter.setForecastList(forecastWeatherData);
+            hourlyForecastAdapter.notifyDataSetChanged();
+        });
     }
 }
