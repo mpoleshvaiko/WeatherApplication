@@ -28,4 +28,9 @@ public class BindingAdapters {
     public static void setHourlyForecastIcon(ImageView imageView, Integer iconResource) {
         imageView.setImageResource(iconResource);
     }
+
+    @BindingAdapter("dailyForecastIcon")
+    public static void setDailyForecastIcon(ImageView imageView, Integer iconResource) {
+        imageView.setImageResource(iconResource);
+    }
 }

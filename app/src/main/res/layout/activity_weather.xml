@@ -12,6 +12,10 @@
         <variable
             name="hourlyForecastAdapter"
             type="com.mpol.weatherapp.recyclerview.HourlyForecastAdapter" />
+
+        <variable
+            name="weeklyForecastAdapter"
+            type="com.mpol.weatherapp.recyclerview.WeeklyForecastAdapter" />
     </data>
 
     <RelativeLayout
@@ -139,6 +143,15 @@
             android:layout_below="@id/min_max_temperature_layout"
             android:adapter="@{hourlyForecastAdapter}"
             android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/weeklyForecastRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hourlyForecastRecyclerView"
+            android:adapter="@{weeklyForecastAdapter}"
+            android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </RelativeLayout>

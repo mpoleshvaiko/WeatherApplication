@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
 import com.mpol.weatherapp.recyclerview.HourlyForecastAdapter;
+import com.mpol.weatherapp.recyclerview.WeeklyForecastAdapter;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private HourlyForecastAdapter hourlyForecastAdapter;
 
+    private WeeklyForecastAdapter weeklyForecastAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,13 +31,16 @@ public class WeatherActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         hourlyForecastAdapter = new HourlyForecastAdapter(new ArrayList<>());
         binding.setHourlyForecastAdapter(hourlyForecastAdapter);
+        weeklyForecastAdapter = new WeeklyForecastAdapter(new ArrayList<>());
+        binding.setWeeklyForecastAdapter(weeklyForecastAdapter);
         viewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         viewModel.setCurrentThemeMode(isDarkMode());
         binding.setViewmodel(viewModel);
         binding.setLifecycleOwner(this);
         viewModel.fetchWeatherDataWithInterval();
         viewModel.fetchWeeklyForecastDataWithInterval();
-        populateRecyclerView();
+        populateHourlyRecyclerView();
+        populateWeeklyRecyclerView();
     }
 
     private boolean isDarkMode() {
@@ -42,10 +48,17 @@ public class WeatherActivity extends AppCompatActivity {
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 
-    private void populateRecyclerView() {
+    private void populateHourlyRecyclerView() {
         viewModel.getHourlyForecastLiveData().observe(this, forecastWeatherData -> {
             hourlyForecastAdapter.setForecastList(forecastWeatherData);
             hourlyForecastAdapter.notifyDataSetChanged();
+        });
+    }
+
+    private void populateWeeklyRecyclerView() {
+        viewModel.getWeeklyForecastLiveData().observe(this, weeklyForecastWeatherData -> {
+            weeklyForecastAdapter.setWeeklyForecastList(weeklyForecastWeatherData);
+            weeklyForecastAdapter.notifyDataSetChanged();
         });
     }
 }
