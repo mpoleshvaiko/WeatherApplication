@@ -4,6 +4,7 @@ import static com.mpol.weatherapp.mapper.WeatherConditionToIconMapper.getIconRes
 
 import com.mpol.weatherapp.model.DayWeatherData;
 import com.mpol.weatherapp.model.HourlyForecastWeatherData;
+import com.mpol.weatherapp.model.WeeklyForecastWeatherData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +25,7 @@ public class WeatherResponseMapper {
         JSONObject locationObject = response.getJSONObject("location");
         JSONObject forecastObject = response.getJSONObject("forecast");
         JSONObject forecastDayObject = forecastObject.getJSONArray("forecastday").getJSONObject(0).getJSONObject("day");
+
         String temperature = currentObject.getString("temp_c");
         String localTime = locationObject.getString("localtime");
         String iconText = currentObject.getJSONObject("condition").getString("text");
@@ -59,6 +62,32 @@ public class WeatherResponseMapper {
         return hourlyForecastWeatherDataList;
     }
 
+    public static List<WeeklyForecastWeatherData> mapWeeklyForecastResponse(JSONObject response, boolean isDarkMode) throws JSONException {
+        ArrayList<WeeklyForecastWeatherData> weeklyForecastWeatherDataList = new ArrayList<>();
+        JSONArray forecastArray = response.getJSONObject("forecast").getJSONArray("forecastday");
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+
+        for (int i = 0; i < forecastArray.length(); i++) {
+            JSONObject weeklyDataObject = forecastArray.getJSONObject(i);
+            JSONObject dayForecastObject = weeklyDataObject.getJSONObject("day");
+            JSONObject conditionForecastObject = dayForecastObject.getJSONObject("condition");
+
+            String rawDate = weeklyDataObject.getString("date");
+            String date = formatDate(rawDate, inputFormat, outputFormat);
+            String maxTemperature = dayForecastObject.getString("maxtemp_c");
+            String minTemperature = dayForecastObject.getString("mintemp_c");
+            String avgTemperature = dayForecastObject.getString("avgtemp_c");
+            String iconText = conditionForecastObject.getString("text");
+            Integer icon = getIconResourceForCondition(iconText, isDarkMode);
+
+            weeklyForecastWeatherDataList.add(new WeeklyForecastWeatherData(date, avgTemperature, icon, minTemperature, maxTemperature));
+        }
+
+        return weeklyForecastWeatherDataList;
+    }
+
     private static String formatTime(
             String rawTime,
             SimpleDateFormat inputFormat,
@@ -71,6 +100,40 @@ public class WeatherResponseMapper {
             return formatted.substring(0, formatted.length() - 3);
         } catch (ParseException e) {
             return rawTime;
+        }
+    }
+
+    private static String formatDate(
+            String rawDate,
+            SimpleDateFormat inputFormat,
+            SimpleDateFormat outputFormat
+    ) {
+        try {
+            Date date = inputFormat.parse(rawDate);
+
+            Calendar calendar = Calendar.getInstance();
+            assert date != null;
+            calendar.setTime(date);
+
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+            String[] daysOfWeek = new String[]{
+                    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+            };
+
+            Calendar today = Calendar.getInstance();
+
+            if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                    calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
+                return "Today";
+            } else if (dayOfWeek >= 1 && dayOfWeek <= 7) {
+                return daysOfWeek[dayOfWeek - 1];
+            } else {
+                return outputFormat.format(date);
+            }
+
+        } catch (Exception e) {
+            return rawDate;
         }
     }
 }

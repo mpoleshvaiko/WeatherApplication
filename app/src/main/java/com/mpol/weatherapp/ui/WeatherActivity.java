@@ -33,6 +33,7 @@ public class WeatherActivity extends AppCompatActivity {
         binding.setViewmodel(viewModel);
         binding.setLifecycleOwner(this);
         viewModel.fetchWeatherDataWithInterval();
+        viewModel.fetchWeeklyForecastDataWithInterval();
         populateRecyclerView();
     }
 
