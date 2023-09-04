@@ -5,16 +5,14 @@ import static com.mpol.weatherapp.mapper.WeatherConditionToIconMapper.getIconRes
 import com.mpol.weatherapp.model.DayWeatherData;
 import com.mpol.weatherapp.model.HourlyForecastWeatherData;
 import com.mpol.weatherapp.model.WeeklyForecastWeatherData;
+import com.mpol.weatherapp.util.DateFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,7 +48,7 @@ public class WeatherResponseMapper {
         for (int i = 0; i < hourlyDataArray.length(); i++) {
             JSONObject hourlyDataObject = hourlyDataArray.getJSONObject(i);
             String rawTime = hourlyDataObject.getString("time");
-            String localTime = formatTime(rawTime, inputFormat, outputFormat);
+            String localTime = DateFormatter.formatTime(rawTime, inputFormat, outputFormat);
 
             String temperature = hourlyDataObject.getString("temp_c");
             Integer isDay = hourlyDataObject.getInt("is_day");
@@ -75,7 +73,7 @@ public class WeatherResponseMapper {
             JSONObject conditionForecastObject = dayForecastObject.getJSONObject("condition");
 
             String rawDate = weeklyDataObject.getString("date");
-            String date = formatDate(rawDate, inputFormat, outputFormat);
+            String date = DateFormatter.formatDate(rawDate, inputFormat, outputFormat);
             String maxTemperature = dayForecastObject.getString("maxtemp_c");
             String minTemperature = dayForecastObject.getString("mintemp_c");
             String avgTemperature = dayForecastObject.getString("avgtemp_c");
@@ -86,54 +84,5 @@ public class WeatherResponseMapper {
         }
 
         return weeklyForecastWeatherDataList;
-    }
-
-    private static String formatTime(
-            String rawTime,
-            SimpleDateFormat inputFormat,
-            SimpleDateFormat outputFormat
-    ) {
-        try {
-            Date date = inputFormat.parse(rawTime);
-            assert date != null;
-            String formatted = outputFormat.format(date);
-            return formatted.substring(0, formatted.length() - 3);
-        } catch (ParseException e) {
-            return rawTime;
-        }
-    }
-
-    private static String formatDate(
-            String rawDate,
-            SimpleDateFormat inputFormat,
-            SimpleDateFormat outputFormat
-    ) {
-        try {
-            Date date = inputFormat.parse(rawDate);
-
-            Calendar calendar = Calendar.getInstance();
-            assert date != null;
-            calendar.setTime(date);
-
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-            String[] daysOfWeek = new String[]{
-                    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-            };
-
-            Calendar today = Calendar.getInstance();
-
-            if (calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
-                    calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) {
-                return "Today";
-            } else if (dayOfWeek >= 1 && dayOfWeek <= 7) {
-                return daysOfWeek[dayOfWeek - 1];
-            } else {
-                return outputFormat.format(date);
-            }
-
-        } catch (Exception e) {
-            return rawDate;
-        }
     }
 }
