@@ -1,6 +1,7 @@
 package com.mpol.weatherapp.ui;
 
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.databinding.BindingAdapter;
 
@@ -24,13 +25,24 @@ public class BindingAdapters {
         imageView.setImageResource(defaultIcon);
     }
 
-    @BindingAdapter("hourlyForecastIcon")
+    @BindingAdapter("app:hourlyForecastIcon")
     public static void setHourlyForecastIcon(ImageView imageView, Integer iconResource) {
         imageView.setImageResource(iconResource);
     }
 
-    @BindingAdapter("dailyForecastIcon")
+    @BindingAdapter("app:dailyForecastIcon")
     public static void setDailyForecastIcon(ImageView imageView, Integer iconResource) {
         imageView.setImageResource(iconResource);
+    }
+
+    @BindingAdapter("app:progressFromTemperatureText")
+    public static void setProgressFromTemperatureText(ProgressBar progressBar, String text) {
+        try {
+            float progressValue = Float.parseFloat(text);
+            progressBar.setProgress((int) progressValue);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 }
