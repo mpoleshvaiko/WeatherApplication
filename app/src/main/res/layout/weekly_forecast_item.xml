@@ -9,61 +9,63 @@
             type="com.mpol.weatherapp.model.WeeklyForecastWeatherData" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:weightSum="9">
 
         <TextView
             android:id="@+id/day_of_week_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="2"
             android:text="@{weeklyForecast.date}"
-            android:textAlignment="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textAlignment="textStart"
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/daily_forecast_condition_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="8dp"
-            app:dailyForecastIcon="@{weeklyForecast.icon}"
-            app:layout_constraintStart_toEndOf="@id/day_of_week_text"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_weight="1"
+            app:dailyForecastIcon="@{weeklyForecast.icon}" />
 
         <TextView
             android:id="@+id/daily_forecast_min_temperature_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="2"
             android:text="@{weeklyForecast.minTemperature}"
             android:textAlignment="center"
-            app:layout_constraintStart_toEndOf="@id/daily_forecast_condition_icon"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/daily_forecast_avg_temperature_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="2"
             android:text="@{weeklyForecast.avgTemperature}"
             android:textAlignment="center"
-            app:layout_constraintStart_toEndOf="@id/daily_forecast_min_temperature_text"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/daily_forecast_max_temperature_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:layout_weight="2"
             android:text="@{weeklyForecast.maxTemperature}"
             android:textAlignment="center"
-            app:layout_constraintStart_toEndOf="@id/daily_forecast_avg_temperature_text"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 
 </layout>

@@ -143,11 +143,13 @@
             android:layout_below="@id/min_max_temperature_layout"
             android:adapter="@{hourlyForecastAdapter}"
             android:orientation="horizontal"
+            android:padding="10dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/weeklyForecastRecyclerView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="10dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/hourlyForecastRecyclerView"
             android:adapter="@{weeklyForecastAdapter}"
