@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class WeatherResponseMapper {
 
-    public static DayWeatherData mapDayResponse(JSONObject response, boolean isDarkMode) throws JSONException {
+    public static DayWeatherData mapDayResponse(JSONObject response) throws JSONException {
         JSONObject currentObject = response.getJSONObject("current");
         JSONObject locationObject = response.getJSONObject("location");
         JSONObject forecastObject = response.getJSONObject("forecast");
@@ -27,7 +27,7 @@ public class WeatherResponseMapper {
         String temperature = currentObject.getString("temp_c");
         String localTime = locationObject.getString("localtime");
         String iconText = currentObject.getJSONObject("condition").getString("text");
-        Integer icon = getIconResourceForCondition(iconText, isDarkMode);
+        Integer icon = getIconResourceForCondition(iconText);
         String windSpeed = currentObject.getString("wind_mph");
         String humidity = currentObject.getString("humidity");
         Integer isDay = currentObject.getInt("is_day");
@@ -37,7 +37,7 @@ public class WeatherResponseMapper {
         return new DayWeatherData(localTime, temperature, icon, iconText, windSpeed, humidity, isDay, maxTemperature, minTemperature);
     }
 
-    public static List<HourlyForecastWeatherData> mapHourlyForecastResponse(JSONObject response, boolean isDarkMode) throws JSONException {
+    public static List<HourlyForecastWeatherData> mapHourlyForecastResponse(JSONObject response) throws JSONException {
         ArrayList<HourlyForecastWeatherData> hourlyForecastWeatherDataList = new ArrayList<>();
         JSONObject forecastDayObject = response.getJSONObject("forecast").getJSONArray("forecastday").getJSONObject(0);
         JSONArray hourlyDataArray = forecastDayObject.getJSONArray("hour");
@@ -53,14 +53,14 @@ public class WeatherResponseMapper {
             String temperature = hourlyDataObject.getString("temp_c");
             Integer isDay = hourlyDataObject.getInt("is_day");
             String iconText = hourlyDataObject.getJSONObject("condition").getString("text");
-            Integer icon = getIconResourceForCondition(iconText, isDarkMode);
+            Integer icon = getIconResourceForCondition(iconText);
 
             hourlyForecastWeatherDataList.add(new HourlyForecastWeatherData(localTime, temperature, icon, isDay));
         }
         return hourlyForecastWeatherDataList;
     }
 
-    public static List<WeeklyForecastWeatherData> mapWeeklyForecastResponse(JSONObject response, boolean isDarkMode) throws JSONException {
+    public static List<WeeklyForecastWeatherData> mapWeeklyForecastResponse(JSONObject response) throws JSONException {
         ArrayList<WeeklyForecastWeatherData> weeklyForecastWeatherDataList = new ArrayList<>();
         JSONArray forecastArray = response.getJSONObject("forecast").getJSONArray("forecastday");
 
@@ -78,7 +78,7 @@ public class WeatherResponseMapper {
             String minTemperature = dayForecastObject.getString("mintemp_c");
             String avgTemperature = dayForecastObject.getString("avgtemp_c");
             String iconText = conditionForecastObject.getString("text");
-            Integer icon = getIconResourceForCondition(iconText, isDarkMode);
+            Integer icon = getIconResourceForCondition(iconText);
 
             weeklyForecastWeatherDataList.add(new WeeklyForecastWeatherData(date, avgTemperature, icon, minTemperature, maxTemperature));
         }

@@ -43,19 +43,9 @@ public class WeatherViewModel extends ViewModel {
 
     private final MutableLiveData<List<WeeklyForecastWeatherData>> weeklyForecastLiveData = new MutableLiveData<>();
 
-    private final MutableLiveData<Boolean> isDarkModeLiveData = new MutableLiveData<>();
-
     @Inject
     public WeatherViewModel(VolleySingleton volleySingleton) {
         this.volleySingleton = volleySingleton;
-    }
-
-    public LiveData<Boolean> getCurrentThemeMode() {
-        return isDarkModeLiveData;
-    }
-
-    public void setCurrentThemeMode(boolean isDarkMode) {
-        isDarkModeLiveData.setValue(isDarkMode);
     }
 
     public LiveData<DayWeatherData> getDayWeatherLiveData() {
@@ -108,9 +98,8 @@ public class WeatherViewModel extends ViewModel {
                 })
                 .flatMap(response -> {
                     try {
-                        boolean isDarkMode = isDarkModeLiveData.getValue() != null && isDarkModeLiveData.getValue();
-                        DayWeatherData currentWeather = WeatherResponseMapper.mapDayResponse(response, isDarkMode);
-                        List<HourlyForecastWeatherData> forecastData = WeatherResponseMapper.mapHourlyForecastResponse(response, isDarkMode);
+                        DayWeatherData currentWeather = WeatherResponseMapper.mapDayResponse(response);
+                        List<HourlyForecastWeatherData> forecastData = WeatherResponseMapper.mapHourlyForecastResponse(response);
                         return Observable.just(new Pair<>(currentWeather, forecastData));
                     } catch (JSONException e) {
                         return Observable.error(e);
@@ -130,8 +119,7 @@ public class WeatherViewModel extends ViewModel {
                 })
                 .flatMap(response -> {
                     try {
-                        boolean isDarkMode = isDarkModeLiveData.getValue() != null && isDarkModeLiveData.getValue();
-                        return Observable.just(WeatherResponseMapper.mapWeeklyForecastResponse(response, isDarkMode));
+                        return Observable.just(WeatherResponseMapper.mapWeeklyForecastResponse(response));
                     } catch (JSONException e) {
                         return Observable.error(e);
                     }

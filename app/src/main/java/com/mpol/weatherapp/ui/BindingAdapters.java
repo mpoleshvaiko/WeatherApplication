@@ -9,20 +9,13 @@ import com.mpol.weatherapp.R;
 
 public class BindingAdapters {
 
-    @BindingAdapter(value = {"app:weatherConditionIcon", "app:isDarkMode"})
-    public static void setWeatherIcon(ImageView imageView, Integer iconResource, boolean isDarkMode) {
-        int defaultIcon = isDarkMode ? R.drawable.ic_default_light : R.drawable.ic_default_dark;
+    @BindingAdapter(value = {"app:weatherConditionIcon"})
+    public static void setWeatherIcon(ImageView imageView, Integer iconResource) {
         if (iconResource != null) {
             imageView.setImageResource(iconResource);
         } else {
-            imageView.setImageResource(defaultIcon);
+            imageView.setImageResource(R.drawable.ic_default);
         }
-    }
-
-    @BindingAdapter("app:isDarkMode")
-    public static void setSearchIcon(ImageView imageView, boolean isDarkMode) {
-        int defaultIcon = isDarkMode ? R.drawable.ic_search_light : R.drawable.ic_search_dark;
-        imageView.setImageResource(defaultIcon);
     }
 
     @BindingAdapter("app:hourlyForecastIcon")

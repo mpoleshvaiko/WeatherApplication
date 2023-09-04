@@ -3,7 +3,6 @@ package com.mpol.weatherapp.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
@@ -34,18 +33,12 @@ public class WeatherActivity extends AppCompatActivity {
         weeklyForecastAdapter = new WeeklyForecastAdapter(new ArrayList<>());
         binding.setWeeklyForecastAdapter(weeklyForecastAdapter);
         viewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
-        viewModel.setCurrentThemeMode(isDarkMode());
         binding.setViewmodel(viewModel);
         binding.setLifecycleOwner(this);
         viewModel.fetchWeatherDataWithInterval();
         viewModel.fetchWeeklyForecastDataWithInterval();
         populateHourlyRecyclerView();
         populateWeeklyRecyclerView();
-    }
-
-    private boolean isDarkMode() {
-        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 
     private void populateHourlyRecyclerView() {
