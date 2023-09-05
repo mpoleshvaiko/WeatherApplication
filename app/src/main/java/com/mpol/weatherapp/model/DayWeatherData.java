@@ -1,9 +1,9 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.model;
 
-public class WeatherData {
+public class DayWeatherData {
     private String localTime;
     private String currentTemperature;
-    private String icon;
+    private Integer icon;
     private String iconText;
     private String windSpeed;
     private String humidity;
@@ -29,11 +29,11 @@ public class WeatherData {
         this.currentTemperature = currentTemperature;
     }
 
-    public String getIcon() {
+    public Integer getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(Integer icon) {
         this.icon = icon;
     }
 
@@ -85,10 +85,10 @@ public class WeatherData {
         this.minTemperature = minTemperature;
     }
 
-    public WeatherData(
+    public DayWeatherData(
             String localTime,
             String currentTemperature,
-            String icon,
+            Integer icon,
             String iconText,
             String windSpeed,
             String humidity,
