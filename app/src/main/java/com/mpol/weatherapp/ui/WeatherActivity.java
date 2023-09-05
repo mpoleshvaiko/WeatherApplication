@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 
 import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
+import com.mpol.weatherapp.model.HourlyForecastWeatherData;
 import com.mpol.weatherapp.recyclerview.HourlyForecastAdapter;
 import com.mpol.weatherapp.recyclerview.WeeklyForecastAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -45,6 +47,7 @@ public class WeatherActivity extends AppCompatActivity {
         viewModel.getHourlyForecastLiveData().observe(this, forecastWeatherData -> {
             hourlyForecastAdapter.setForecastList(forecastWeatherData);
             hourlyForecastAdapter.notifyDataSetChanged();
+            findCurrentHourAndScroll(forecastWeatherData);
         });
     }
 
@@ -53,5 +56,20 @@ public class WeatherActivity extends AppCompatActivity {
             weeklyForecastAdapter.setWeeklyForecastList(weeklyForecastWeatherData);
             weeklyForecastAdapter.notifyDataSetChanged();
         });
+    }
+
+    private void findCurrentHourAndScroll(List<HourlyForecastWeatherData> hourlyForecastWeatherData) {
+        int currentPosition = -1;
+        for (int i = 0; i < hourlyForecastWeatherData.size(); i++) {
+            HourlyForecastWeatherData forecastWeatherData = hourlyForecastWeatherData.get(i);
+            if ("Now".equals(forecastWeatherData.getLocalTime())) {
+                currentPosition = i;
+                break;
+            }
+        }
+
+        if (currentPosition >= 0) {
+            binding.hourlyForecastRecyclerView.scrollToPosition(currentPosition);
+        }
     }
 }

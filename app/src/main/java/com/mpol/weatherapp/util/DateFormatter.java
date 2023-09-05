@@ -14,6 +14,17 @@ public class DateFormatter {
         try {
             Date date = inputFormat.parse(rawTime);
             assert date != null;
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+            Calendar now = Calendar.getInstance();
+            int nowHour = now.get(Calendar.HOUR_OF_DAY);
+
+            if (currentHour == nowHour) {
+                return "Now";
+            }
             String formatted = outputFormat.format(date);
             return formatted.substring(0, formatted.length() - 3);
         } catch (ParseException e) {
