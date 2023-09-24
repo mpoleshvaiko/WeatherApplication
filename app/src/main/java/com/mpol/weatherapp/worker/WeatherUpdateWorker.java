@@ -9,10 +9,12 @@ import androidx.work.Data;
 import androidx.work.RxWorker;
 import androidx.work.WorkerParameters;
 
+import com.mpol.weatherapp.model.DayWeatherData;
 import com.mpol.weatherapp.repository.WeatherDataRepository;
 import com.mpol.weatherapp.util.SerializationUtils;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedInject;
@@ -42,8 +44,8 @@ public class WeatherUpdateWorker extends RxWorker {
         try {
             return Single.zip(
                     weatherDataRepository.getCurrentWeatherData().firstOrError().subscribeOn(Schedulers.io()),
-                    weatherDataRepository.getHourlyForecastWeatherData().firstOrError().subscribeOn(Schedulers.io()),
-                    weatherDataRepository.getWeeklyForecastWeatherData().firstOrError().subscribeOn(Schedulers.io()),
+                    weatherDataRepository.getHourlyForecastWeatherData().firstOrError().subscribeOn(Schedulers.io()).onErrorReturnItem(new ArrayList<>()),
+                    weatherDataRepository.getWeeklyForecastWeatherData().firstOrError().subscribeOn(Schedulers.io()).onErrorReturnItem(new ArrayList<>()),
                     (currentWeather, hourlyForecast, weeklyForecast) -> {
                         String currentWeatherSerialized = SerializationUtils.serialize(currentWeather);
                         String hourlyForecastSerialized = SerializationUtils.serialize(hourlyForecast);
