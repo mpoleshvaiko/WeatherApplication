@@ -2,13 +2,18 @@ package com.mpol.weatherapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Data;
+import androidx.work.WorkInfo;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.mpol.weatherapp.databinding.ActivityWeatherBinding;
+import com.mpol.weatherapp.model.DayWeatherData;
 import com.mpol.weatherapp.model.HourlyForecastWeatherData;
 import com.mpol.weatherapp.recyclerview.HourlyForecastAdapter;
 import com.mpol.weatherapp.recyclerview.WeeklyForecastAdapter;
+import com.mpol.weatherapp.util.SerializationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +42,10 @@ public class WeatherActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         binding.setViewmodel(viewModel);
         binding.setLifecycleOwner(this);
-        viewModel.fetchWeatherDataWithInterval();
-        viewModel.fetchWeeklyForecastDataWithInterval();
+        viewModel.weatherWorkInfoLiveData().observe(this, workInfo -> {
+            Log.d("WeatherUpdateWorker", "FetchData with state -> " + workInfo.getState());
+            viewModel.setWeatherData(workInfo);
+        });
         populateHourlyRecyclerView();
         populateWeeklyRecyclerView();
     }

@@ -1,42 +1,29 @@
 package com.mpol.weatherapp.ui;
 
-import android.util.Log;
-import android.util.Pair;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.mpol.weatherapp.BuildConfig;
 import com.mpol.weatherapp.model.DayWeatherData;
 import com.mpol.weatherapp.model.HourlyForecastWeatherData;
-import com.mpol.weatherapp.VolleySingleton;
-import com.mpol.weatherapp.mapper.WeatherResponseMapper;
 import com.mpol.weatherapp.model.WeeklyForecastWeatherData;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mpol.weatherapp.util.SerializationUtils;
+import com.mpol.weatherapp.worker.WeatherUpdateWorker;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableOnSubscribe;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
 public class WeatherViewModel extends ViewModel {
-
-    private final VolleySingleton volleySingleton;
-
-    private Disposable disposable;
+    private final WorkManager workManager;
     private final MutableLiveData<DayWeatherData> dayWeatherLiveData = new MutableLiveData<>();
 
     private final MutableLiveData<List<HourlyForecastWeatherData>> hourlyForecastLiveData = new MutableLiveData<>();
@@ -44,8 +31,8 @@ public class WeatherViewModel extends ViewModel {
     private final MutableLiveData<List<WeeklyForecastWeatherData>> weeklyForecastLiveData = new MutableLiveData<>();
 
     @Inject
-    public WeatherViewModel(VolleySingleton volleySingleton) {
-        this.volleySingleton = volleySingleton;
+    public WeatherViewModel(WorkManager workManager) {
+        this.workManager = workManager;
     }
 
     public LiveData<DayWeatherData> getDayWeatherLiveData() {
@@ -60,81 +47,25 @@ public class WeatherViewModel extends ViewModel {
         return weeklyForecastLiveData;
     }
 
-    public void fetchWeatherDataWithInterval() {
-        disposable = Observable.interval(0, 1, TimeUnit.MINUTES)
-                .flatMap(period -> fetchWeatherData())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        pair -> {
-                            dayWeatherLiveData.setValue(pair.first);
-                            hourlyForecastLiveData.setValue(pair.second);
-                        },
-                        throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
-                );
+
+    public LiveData<WorkInfo> weatherWorkInfoLiveData() {
+        OneTimeWorkRequest weatherUpdateWorkRequest =
+                new OneTimeWorkRequest.Builder(WeatherUpdateWorker.class).build();
+        workManager.enqueue(weatherUpdateWorkRequest);
+        return workManager.getWorkInfoByIdLiveData(weatherUpdateWorkRequest.getId());
     }
 
-    public void fetchWeeklyForecastDataWithInterval() {
-        disposable = Observable.interval(0, 1, TimeUnit.DAYS)
-                .flatMap(period -> fetchWeeklyForecastData())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        weeklyForecastLiveData::setValue,
-                        throwable -> Log.e("ERROR", "Error during processing response" + throwable.getMessage())
-                );
-    }
+    public void setWeatherData(WorkInfo workInfo) {
+        if (workInfo != null && workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+            Data outputData = workInfo.getOutputData();
+            String currentWeatherJson = outputData.getString("currentWeather");
+            dayWeatherLiveData.setValue(SerializationUtils.deserialize(currentWeatherJson, DayWeatherData.class));
 
-    private Observable<Pair<DayWeatherData, List<HourlyForecastWeatherData>>> fetchWeatherData() {
-        return Observable.create((ObservableOnSubscribe<JSONObject>) emitter -> {
-                    String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw";
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                            Request.Method.GET, url, null,
-                            emitter::onNext,
-                            emitter::onError
-                    );
+            String hourlyWeatherJson = outputData.getString("hourlyForecast");
+            hourlyForecastLiveData.setValue(SerializationUtils.deserializeList(hourlyWeatherJson, HourlyForecastWeatherData.class));
 
-                    volleySingleton.getRequestQueue().add(jsonObjectRequest);
-                })
-                .flatMap(response -> {
-                    try {
-                        DayWeatherData currentWeather = WeatherResponseMapper.mapDayResponse(response);
-                        List<HourlyForecastWeatherData> forecastData = WeatherResponseMapper.mapHourlyForecastResponse(response);
-                        return Observable.just(new Pair<>(currentWeather, forecastData));
-                    } catch (JSONException e) {
-                        return Observable.error(e);
-                    }
-                });
-    }
-
-    private Observable<List<WeeklyForecastWeatherData>> fetchWeeklyForecastData() {
-        return Observable.create((ObservableOnSubscribe<JSONObject>) emitter -> {
-                    String url = "https://api.weatherapi.com/v1/forecast.json?key=" + BuildConfig.API_KEY + "&q=Warsaw&days=7";
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                            Request.Method.GET, url, null,
-                            emitter::onNext,
-                            emitter::onError
-                    );
-                    volleySingleton.getRequestQueue().add(jsonObjectRequest);
-                })
-                .flatMap(response -> {
-                    try {
-                        return Observable.just(WeatherResponseMapper.mapWeeklyForecastResponse(response));
-                    } catch (JSONException e) {
-                        return Observable.error(e);
-                    }
-                });
-    }
-
-    private void disposeSubscription() {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
+            String weeklyWeatherJson = outputData.getString("weeklyForecast");
+            weeklyForecastLiveData.setValue(SerializationUtils.deserializeList(weeklyWeatherJson, WeeklyForecastWeatherData.class));
         }
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        disposeSubscription();
     }
 }
