@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DateFormatter {
+public class DateFormatterUtils {
     public static String formatTime(
             String rawTime,
             SimpleDateFormat inputFormat,

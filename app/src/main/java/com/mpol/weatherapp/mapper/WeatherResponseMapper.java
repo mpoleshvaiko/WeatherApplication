@@ -5,7 +5,7 @@ import static com.mpol.weatherapp.mapper.WeatherConditionToIconMapper.getIconRes
 import com.mpol.weatherapp.model.DayWeatherData;
 import com.mpol.weatherapp.model.HourlyForecastWeatherData;
 import com.mpol.weatherapp.model.WeeklyForecastWeatherData;
-import com.mpol.weatherapp.util.DateFormatter;
+import com.mpol.weatherapp.util.DateFormatterUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,7 +48,7 @@ public class WeatherResponseMapper {
         for (int i = 0; i < hourlyDataArray.length(); i++) {
             JSONObject hourlyDataObject = hourlyDataArray.getJSONObject(i);
             String rawTime = hourlyDataObject.getString("time");
-            String localTime = DateFormatter.formatTime(rawTime, inputFormat, outputFormat);
+            String localTime = DateFormatterUtils.formatTime(rawTime, inputFormat, outputFormat);
 
             String temperature = hourlyDataObject.getString("temp_c");
             Integer isDay = hourlyDataObject.getInt("is_day");
@@ -73,7 +73,7 @@ public class WeatherResponseMapper {
             JSONObject conditionForecastObject = dayForecastObject.getJSONObject("condition");
 
             String rawDate = weeklyDataObject.getString("date");
-            String date = DateFormatter.formatDate(rawDate, inputFormat, outputFormat);
+            String date = DateFormatterUtils.formatDate(rawDate, inputFormat, outputFormat);
             String maxTemperature = dayForecastObject.getString("maxtemp_c");
             String minTemperature = dayForecastObject.getString("mintemp_c");
             String avgTemperature = dayForecastObject.getString("avgtemp_c");

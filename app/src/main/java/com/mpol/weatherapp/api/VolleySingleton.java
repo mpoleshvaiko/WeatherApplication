@@ -1,4 +1,4 @@
-package com.mpol.weatherapp;
+package com.mpol.weatherapp.api;
 
 
 import android.content.Context;
